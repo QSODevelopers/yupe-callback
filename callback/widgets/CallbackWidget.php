@@ -75,7 +75,7 @@ class CallbackWidget extends yupe\widgets\YWidget{
 									'title'						=>	Yii::t('CallbackModule.callback','Заявка на обратный звонок'),							
 									'prevTextBody'				=>	'',			
 									'afterTextBody'				=>	'',			
-									'renderAfterSuccess'		=> 	false,		
+									'showFormAfterSend'		=> 	false,		
 									'afterText'					=>	'',
 								];
 		$this->_templateOptions = [
@@ -125,7 +125,10 @@ class CallbackWidget extends yupe\widgets\YWidget{
 
 	public function run(){
 		$model = new CallbackModel;
-		$model->setRules($this->template); 
+		$model->setRules($this->template);
+
+		if(!Yii::app()->request->isAjaxrequest && $_POST['formId'] == $this->formOptions['id'])
+			Processing::validate($model);
 
 		$this->createBody();
 		$this->render($this->view,['model'=>$model,'body'=>$this->body]);

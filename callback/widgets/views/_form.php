@@ -44,8 +44,8 @@ $afterValidateJs = 'js:function(form,data,hasError)
 									}';
 
 
-echo $this->formOptions['prevText'];
-if(!$this->formOptions['renderAfterSuccess'] || !Yii::app()->user->hasFlash($this->formOptions['id'])){
+
+if($this->formOptions['showFormAfterSend'] || !Yii::app()->user->hasFlash($this->formOptions['id'])){
 
 	$form = $this->beginWidget('bootstrap.widgets.TbActiveForm',[
 		'id'                      =>  $this->formOptions['id'],
@@ -68,6 +68,7 @@ if(!$this->formOptions['renderAfterSuccess'] || !Yii::app()->user->hasFlash($thi
 		
 		eval($body);
 
+		echo CHtml::hiddenField('formId',$this->formOptions['id']);
 		echo CHtml::hiddenField('mail',json_encode([$this->mailOptions]));
 		echo CHtml::hiddenField('template',$this->template);
 		echo CHtml::hiddenField('messages',json_encode([
@@ -80,6 +81,8 @@ if(!$this->formOptions['renderAfterSuccess'] || !Yii::app()->user->hasFlash($thi
 		echo $this->formOptions['afterBodyText'];
 
 	$this->endWidget();
+}else{
+	echo Yii::app()->user->hasFlash($this->formOptions["id"]) ? "<div class='alert alert-success show'>".Yii::app()->user->getFlash($this->formOptions["id"])."</div>":"";
 }
 echo $this->formOptions['afterText'];
 
