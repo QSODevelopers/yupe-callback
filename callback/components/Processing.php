@@ -40,6 +40,10 @@ class Processing extends CComponent {
 					Yii::app()->user->setFlash($message['id'],$message['success']);
 				else
 					Yii::app()->user->setFlash($message['id'],$message['error']);
+			}else{
+				//спорный момент
+				echo CActiveForm::validate($model);
+				Yii::app()->end();
 			}
 		}
 	}
@@ -58,13 +62,13 @@ class Processing extends CComponent {
     	$controller = Yii::app()->createController('callback/callback/index');
 
    		$txt_message = $controller[0]->renderPartial('mail/'.$params['view'], array('model'=>$model), true, false);
-   		$headers = 'From:'.$params->from."\r\n".
+   		$headers = 'From:'.$params['from']."\r\n".
 					    'Content-type: text/html;'.
 					    'charset=utf-8'."\r\n".
 					    'X-Mailer: PHP/' . phpversion();
    		$result = mail(
-            	$params->to,
-            	$params->title,
+            	$params['to'],
+            	$params['title'],
             	$txt_message,
             	$headers
             );

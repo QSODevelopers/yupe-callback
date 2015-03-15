@@ -48,11 +48,12 @@ $afterValidateJs = 'js:function(form,data,hasError){
 if($this->formOptions['showFormAfterSend'] || !Yii::app()->user->hasFlash($this->formOptions['id'])){
 //создаем и рендерим форму
 	$form = $this->beginWidget('bootstrap.widgets.TbActiveForm',[
-		'id'                      =>  $this->formOptions['id'],
-		'type'                    =>  $this->formOptions['type'],
-		'enableClientValidation'  =>  $this->formOptions['enableClientValidation'],
-		'htmlOptions'             =>  $this->formOptions['htmlOptions'],
-		'clientOptions'           =>  $this->formOptions['ajax'] 
+		'id'						=>  $this->formOptions['id'],
+		'type'						=>  $this->formOptions['type'],
+		'ajax'						=>  $this->formOptions['ajax'],
+		'enableClientValidation'	=>  $this->formOptions['enableClientValidation'],
+		'htmlOptions'				=>  $this->formOptions['htmlOptions'],
+		'clientOptions'				=>  $this->formOptions['ajax'] || $this->formOptions['enableClientValidation'] 
 										? 
 											[
 												'validateOnSubmit'	=>	$this->formOptions['ajax'],
