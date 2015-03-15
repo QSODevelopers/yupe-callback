@@ -21,11 +21,13 @@
 
 		default:
 			echo '<div class="alert alert-error">
-					<h5>Кто к нам с чем и зачем, тот от того и того.</h5>
-					Сам ты '.$this->type.'. Данный тип обратной заявки является не коректным. Загляни в исходный код, или просмотри коментарии.
+					<h5>'.Yii::t('Callback.callback','Кто к нам с чем и зачем, тот от того и того.').'</h5>'.
+					Yii::t('Callback.callback', 'Сам ты {type}. Данный тип виджета является не коректным. Загляни в исходный код, или просмотри коментарии.',['type'=>$this->type]).'
 				</div>';
 			break;
 	}
+
+	//Спорный скрипт, для того чтобы не использвались правила для maskedField если нету JS
 	Yii::app()->clientScript->registerScript('enabledJs','
 		var date = new Date( new Date().getTime() + 60*1000);
 		document.cookie="js=true; path=/; expires="+date.toUTCString();

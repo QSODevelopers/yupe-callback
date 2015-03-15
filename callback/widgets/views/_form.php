@@ -1,5 +1,6 @@
 <?php
-
+//Переменная накапливающая в себе скрипт перезагрузки формы 
+//коль установлен сброс формы после отправки
 $resetJs = $this->formOptions['resetOptions']['enableReset'] 
 					? 
 					'setTimeout(function(){
@@ -12,41 +13,40 @@ $resetJs = $this->formOptions['resetOptions']['enableReset']
 					},'.$this->formOptions['resetOptions']['timeout'].');'
 					:
 					'';
-
-$afterValidateJs = 'js:function(form,data,hasError)
-									{
-										if(!hasError)
-										{
-											$.ajax(
-											{
-												"type"			: 	"POST",
-												"url"			: 	"'.$this->formOptions['action'].'",
-												"data"			: 	form.serialize(),
-												"beforeSend"  	: 	function(){
-																		$("button",form).attr("disabled","disabled");
-																	},
-												"success"		:	function(data){
-																		data = $.parseJSON(data);
-																		var $success = $("#'.$this->templateOptions['message']['id'].'",form);
-																		if(data.result){
-																				$success.addClass("alert-success show");
-																				$success.html("'.$this->successMessage.'");
-																		}else{
-																				$success.addClass("alert-error show");
-																				$success.html("'.$this->errorMessage.'");
-																		}
-																	},
-												"complete"    	:	 function(){
-																		'.$resetJs.'
-																	},
-											});
-										}
-									}';
-
+//Переменная накапливающая скрипт действий после валидации
+$afterValidateJs = 'js:function(form,data,hasError){
+						if(!hasError)
+						{
+							$.ajax(
+							{
+								"type"		: 	"POST",
+								"url"		: 	"'.$this->formOptions['action'].'",
+								"data"		: 	form.serialize(),
+								"beforeSend": 	function(){
+													$("button",form).attr("disabled","disabled");
+												},
+								"success"	:	function(data){
+													data = $.parseJSON(data);
+													var $success = $("#'.$this->templateOptions['message']['id'].'",form);
+													if(data.result){
+															$success.addClass("alert-success show");
+															$success.html("'.$this->successMessage.'");
+													}else{
+															$success.addClass("alert-error show");
+															$success.html("'.$this->errorMessage.'");
+													}
+												},
+								"complete"  :	function(){
+													'.$resetJs.'
+												},
+							});
+						}
+					}';
 
 
+//Если установлена переменная "отображать форму после обработки" или нету сообщения после обработки
 if($this->formOptions['showFormAfterSend'] || !Yii::app()->user->hasFlash($this->formOptions['id'])){
-
+//создаем и рендерим форму
 	$form = $this->beginWidget('bootstrap.widgets.TbActiveForm',[
 		'id'                      =>  $this->formOptions['id'],
 		'type'                    =>  $this->formOptions['type'],
@@ -66,6 +66,7 @@ if($this->formOptions['showFormAfterSend'] || !Yii::app()->user->hasFlash($this-
 			echo "<script>$('#".$this->formOptions['id']."').attr('action','".$this->formOptions['action']."');</script>";
 		echo $this->formOptions['prevBodyText'];
 		
+		//иполнение кода тела формы
 		eval($body);
 
 		echo CHtml::hiddenField('formId',$this->formOptions['id']);
@@ -82,6 +83,7 @@ if($this->formOptions['showFormAfterSend'] || !Yii::app()->user->hasFlash($this-
 
 	$this->endWidget();
 }else{
+//иначе просто выводим сообщение
 	echo Yii::app()->user->hasFlash($this->formOptions["id"]) ? "<div class='alert alert-success show'>".Yii::app()->user->getFlash($this->formOptions["id"])."</div>":"";
 }
 echo $this->formOptions['afterText'];

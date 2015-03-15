@@ -1,6 +1,18 @@
-<?php 
+<?php
+/**
+* Компонент с функциями
+*
+**/
+
 class Processing extends CComponent {
 
+	/**
+     * Функция валидации пришедшей формы
+     *
+     * @param СModel||CActiveForm $model модель для провеки 
+     *
+     * @return void
+     */
 	public static function validate($model = null){
 		if(is_null($model)){
 			$model = new CallbackModel;
@@ -32,6 +44,14 @@ class Processing extends CComponent {
 		}
 	}
 
+	/**
+     * Функция отправки письма
+     *
+     * @param СModel||CActiveForm $model модель для провеки
+     * @param json $mail массив параметров для отправки письма
+     *
+     * @return boolean
+     */
 	public static function mail($model, $mail){
     	$params = CJSON::decode($mail)[0];
 

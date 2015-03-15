@@ -3,9 +3,9 @@
 /**
  * CallbackModule основной класс модуля callback
  *
- * @author WebGears team
+ * @author UnnamedTeam
  * @link http://none.shit
- * @copyright 2015-2013 BlackTag && WebGears team
+ * @copyright 2015 UnnamedTeam & Project Yupe!Flavoring 
  * @package yupe.modules.callback.install
  * @license  BSD
  * @since 0.0.1
@@ -16,7 +16,7 @@ use yupe\components\WebModule;
 
 class CallbackModule extends WebModule
 {
-	const VERSION = '0.0.1';
+	const VERSION = '0.5.1';
 	public $assetsPath = "application.modules.callback.views.assets";
 
     /**
@@ -39,7 +39,7 @@ class CallbackModule extends WebModule
     // автор модуля (Ваше Имя, название студии и т.п.)
     public function getAuthor()
     {
-        return Yii::t('CallbackModule.callback', 'WebGears team');
+        return Yii::t('CallbackModule.callback', 'UnnamedTeam');
     }
  
     // контактный email автора
@@ -64,7 +64,7 @@ class CallbackModule extends WebModule
     }
     public function getIcon()
     {
-        return 'dc dc-mail-open';
+        return 'fa fa-beer';
     }
 	public function init()
 	{

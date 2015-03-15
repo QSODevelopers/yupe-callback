@@ -1,5 +1,8 @@
 <?php
-
+/**
+* Изменяемая модель для валидации созданных форм
+*
+**/
 class CallbackModel extends CFormModel{
 
 	private $rules = [['name, phone, phoneMasked, email, text, service, qaptcha, verifyCode','safe']];
@@ -91,17 +94,6 @@ class CallbackModel extends CFormModel{
 			];
 	}
 
-	// public function addRuleButton(){
-	// 	return [];
-	// }
-
-	// public function addRuleErrors(){
-	// 	return [];
-	// }
-	// public function addRuleMessage(){
-	// 	return [];
-	// }
-
 	public function addRuleService(){
 		return [
 				['service','required'],
@@ -120,7 +112,13 @@ class CallbackModel extends CFormModel{
 			];
 	}
 
-	/*Write your rules here*/
+	/*Добавляйте правила валидации для своих templatов ниже
+		public function renderTemplName(){
+			return [
+					rules for templ
+				];
+		}
+	*/
 
 }
 

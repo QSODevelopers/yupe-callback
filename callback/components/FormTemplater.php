@@ -1,9 +1,44 @@
-<?php 
+<?php
+/**
+* Компонент для сборки кода формы
+*
+**/
+
 class FormTemplater {
+
+	/**
+     * Функция возвращает массив доступных temlatов
+     *
+     * @return array
+     */
+	public static function getTemplates(){
+		return [
+			'name',
+			'phone',
+			'email',
+			'text',
+		];
+	}
+	/**
+     * Функция возвращает массив temlatов для которых применяются дефолтные настройки массива templateOptions
+     *
+     * @return array
+     */
+	public static function getTempDefaultForSetting(){
+		return [
+			'name',
+			'phone',
+			'email',
+			'text',
+		];
+	}
+
+	//Поле для ввода имени
 	public static function renderName(){
 		return 'echo $form->textFieldGroup($model,"name",$this->templateOptions["name"]);';
 	}
 
+	//Поле для ввода телефона
 	public static function renderPhone(){
 		return 'echo $form->textFieldGroup($model,"phone",$this->templateOptions["phone"]);';
 	}
@@ -72,6 +107,12 @@ class FormTemplater {
 				echo Yii::app()->user->hasFlash($this->formOptions["id"]) ? "<div class=\'alert alert-success\'>".Yii::app()->user->getFlash($this->formOptions["id"])."</div>":"";';
 	}
 	
+
+	//Дописывать свои templatы ниже
+	//
+	// public static function renderTemplName(){
+	// 	return {php for render};
+	// }
 
 }
 ?>
