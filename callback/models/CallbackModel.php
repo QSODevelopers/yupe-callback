@@ -5,8 +5,8 @@
 **/
 class CallbackModel extends CFormModel{
 
-	private $rules = [['name, phone, phoneMasked, email, text, service, qaptcha, verifyCode','safe']];
-
+	private $rules = [['name, phone, phoneMasked, email, text, service, verifyCode','safe']];
+	protected $unicName = 'CallbackModel';
 	//Attributes
 	public $name;
 	public $email;
@@ -14,7 +14,6 @@ class CallbackModel extends CFormModel{
 	public $phoneMasked;
 	public $text;
 	public $service;
-	public $qaptcha;
 	public $verifyCode;
 
 	/*your var@attributes*/
@@ -22,6 +21,21 @@ class CallbackModel extends CFormModel{
 
 	public function rules(){	
 		return $this->rules;
+	}
+
+	public function setUnicName($name){
+		if(!is_null($name))
+			$this->unicName = $name;
+		else
+			throw new CException(Yii::t('CallbackModule.callback', 'Unic model name can\' be empty'));
+	}
+
+	public function getUnicName(){
+		return $this->unicName;
+	}
+
+	public function getIdAttribute($attribute){
+		return $this->getUnicName().'_'.$attribute;
 	}
 
 	public function attributeLabels(){
@@ -35,13 +49,6 @@ class CallbackModel extends CFormModel{
 			'verifyCode'=>'Проверочный код',
 			'qaptcha' => 'Проведите ползунок вправо для отправки формы'
 		];
-	}
-
-	public function qaptchaVerify($attribute){
-		$qaptcha = $_COOKIE['qaptcha_key'];
-		if($attribute != $qaptcha){
-			$this->addError('qaptcha','Если Вы хотите отправить заявку проведите штучку дрючку');
-		}
 	}
 
 	public function setRules($template){
@@ -84,6 +91,7 @@ class CallbackModel extends CFormModel{
 
 	public function addRuleEmail(){
 		return [
+				['email','required'],
 				['email','email','message'=>'Неверный формат E-mail'],
 			];
 	}
@@ -100,25 +108,42 @@ class CallbackModel extends CFormModel{
 			];
 	}
 
-	public function addRuleCaptcha(){
+	public function addRuleVerifyCode(){
 		return [
-				['verifyCode', 'captcha', 'allowEmpty'=>!CCaptcha::checkRequirements()],
+	            [
+	                'verifyCode',
+	                'application\modules\callback\components\validators\UnCaptchaValidator',
+	                'captchaAction'	=> 'callback/callback/captcha'.$this->getUnicName(),
+	                'allowEmpty' => !CCaptcha::checkRequirements(),
+	            ],
+	            ['verifyCode', 'emptyOnInvalid']
 			];
-	}
 
-	public function renderQaptcha(){
-		return [
-				['qaptcha','qaptchaVerify'],
-			];
 	}
 
 	/*Добавляйте правила валидации для своих templatов ниже
-		public function renderTemplName(){
+		public function addRuleTemplName(){
 			return [
 					rules for templ
 				];
 		}
 	*/
+
+
+	/**
+     * Обнуляем введённое значение капчи, если оно введено неверно:
+     *
+     * @param string $attribute - имя атрибута
+     * @param mixed $params - параметры
+     *
+     * @return void
+     **/
+    public function emptyOnInvalid($attribute, $params)
+    {
+        if ($this->hasErrors()) {
+            $this->verifyCode = null;
+        }
+    }
 
 }
 

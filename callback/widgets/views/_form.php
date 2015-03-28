@@ -1,18 +1,23 @@
 <?php
 //Переменная накапливающая в себе скрипт перезагрузки формы 
 //коль установлен сброс формы после отправки
-$resetJs = $this->formOptions['resetOptions']['enableReset'] 
-					? 
-					'setTimeout(function(){
-						var $success = $("#'.$this->templateOptions['message']['id'].'",form);
+$resetJs = 'setTimeout(function(){';
+$resetJs .= $this->formOptions['resetOptions']['resetForm']? 
+					'$("#'.$this->formOptions['id'].'").trigger("reset");
+					 $("button",form).removeAttr("disabled");':'';
+$resetJs .= $this->formOptions['resetOptions']['resetCaptcha']? 
+					'$(".captcha>a,.captcha>button",form).click();':'';					 
+$resetJs .= $this->formOptions['resetOptions']['closeModal']? 
+					'$("#close-modal").click();':'';
+$resetJs .= $this->formOptions['resetOptions']['clearMessage']? 
+					'var $success = $("#'.$this->templateOptions['message']['id'].'",form);
+					 $success.removeClass("alert-success alert-danger show").html("");':'';
+$resetJs .='},'.$this->formOptions['resetOptions']['timeout'].');';
 
-						$("#'.$this->formOptions['id'].'").trigger("reset");
-						$success.removeClass("alert-success alert-error show").html("");
-						$("#close-modal").click();
-						$("button",form).removeAttr("disabled");
-					},'.$this->formOptions['resetOptions']['timeout'].');'
-					:
-					'';
+
+						
+$ajaxSuck = $this->formOptions['ajax']?'+"&formValid=1"':'';						
+						
 //Переменная накапливающая скрипт действий после валидации
 $afterValidateJs = 'js:function(form,data,hasError){
 						if(!hasError)
@@ -20,8 +25,9 @@ $afterValidateJs = 'js:function(form,data,hasError){
 							$.ajax(
 							{
 								"type"		: 	"POST",
+								//"dataType"	: 	"json",
 								"url"		: 	"'.$this->formOptions['action'].'",
-								"data"		: 	form.serialize(),
+								"data"		: 	form.serialize()'.$ajaxSuck.',
 								"beforeSend": 	function(){
 													$("button",form).attr("disabled","disabled");
 												},
@@ -32,7 +38,7 @@ $afterValidateJs = 'js:function(form,data,hasError){
 															$success.addClass("alert-success show");
 															$success.html("'.$this->successMessage.'");
 													}else{
-															$success.addClass("alert-error show");
+															$success.addClass("alert-danger show");
 															$success.html("'.$this->errorMessage.'");
 													}
 												},
@@ -43,34 +49,36 @@ $afterValidateJs = 'js:function(form,data,hasError){
 						}
 					}';
 
-
+echo $this->formOptions['prevText'];
 //Если установлена переменная "отображать форму после обработки" или нету сообщения после обработки
 if($this->formOptions['showFormAfterSend'] || !Yii::app()->user->hasFlash($this->formOptions['id'])){
 //создаем и рендерим форму
-	$form = $this->beginWidget('bootstrap.widgets.TbActiveForm',[
+	$form = $this->beginWidget('application.modules.callback.components.UtActiveForm',[
 		'id'						=>  $this->formOptions['id'],
 		'type'						=>  $this->formOptions['type'],
-		'ajax'						=>  $this->formOptions['ajax'],
+		'enableAjaxValidation'		=>  $this->formOptions['ajax'],
 		'enableClientValidation'	=>  $this->formOptions['enableClientValidation'],
 		'htmlOptions'				=>  $this->formOptions['htmlOptions'],
 		'clientOptions'				=>  $this->formOptions['ajax'] || $this->formOptions['enableClientValidation'] 
 										? 
 											[
-												'validateOnSubmit'	=>	$this->formOptions['ajax'],
+												'validateOnSubmit'	=>	$this->formOptions['ajax'] || $this->formOptions['enableClientValidation'] ,
 												'afterValidate'		=>	$afterValidateJs
 											]
 										:
 											'',
 	]);
 		echo $this->formOptions['title'] ? '<h3>'.$this->formOptions['title'].'</h3>': '';
-		if($this->formOptions['ajax'])
+		if($this->formOptions['ajax'] || $this->formOptions['enableClientValidation'])
 			echo "<script>$('#".$this->formOptions['id']."').attr('action','".$this->formOptions['action']."');</script>";
 		echo $this->formOptions['prevBodyText'];
 		
 		//иполнение кода тела формы
 		eval($body);
-
-		echo CHtml::hiddenField('formId',$this->formOptions['id']);
+?>
+		
+<?php
+		echo CHtml::hiddenField('widgetId',$this->id);
 		echo CHtml::hiddenField('mail',json_encode([$this->mailOptions]));
 		echo CHtml::hiddenField('template',$this->template);
 		echo CHtml::hiddenField('messages',json_encode([

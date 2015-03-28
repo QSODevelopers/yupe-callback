@@ -19,15 +19,22 @@ class CallbackController extends \yupe\components\controllers\FrontController
 	public function actions()
 	{
 		return array(
-			'captcha'=>array(
-				'class'=>'CCaptchaAction',
-				'backColor'=>0xFFFFFF,
-			),
+			'captcharightSend'         => [
+                'class'     => 'yupe\components\actions\YCaptchaAction',
+                'backColor' => 0xFFFFFF,
+                'foreColor'	=> 0x481704,
+                'testLimit' => 1,
+                //'minLength' => Yii::app()->getModule('callback')->minCaptchaLength,
+            ],
+            'captchacenterForm'         => [
+                'class'     => 'yupe\components\actions\YCaptchaAction',
+                'backColor' => 0xFFFFFF,
+                'testLimit' => 1,
+                //'minLength' => Yii::app()->getModule('callback')->minCaptchaLength,
+            ],
 			'page'=>array(
 				'class'=>'CViewAction',
 			),
-			'request'=>'application.modules.callback.actions.RequestAction',
-			'qaptcha'=>'application.modules.callback.actions.QaptchaAction',
 			'validate'=>'application.modules.callback.actions.ValidateFormAction',
 		);
 	}

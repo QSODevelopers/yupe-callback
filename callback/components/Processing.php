@@ -3,7 +3,7 @@
 * Компонент с функциями
 *
 **/
-
+Yii::import('application.modules.callback.components.UtActiveForm');
 class Processing extends CComponent {
 
 	/**
@@ -16,18 +16,28 @@ class Processing extends CComponent {
 	public static function validate($model = null){
 		if(is_null($model)){
 			$model = new CallbackModel;
+			$model->setUnicName($_POST['widgetId']);
+			if(empty($_POST['CallbackModel']['verifyCode']))
+				$_POST['template'] = preg_replace('/\{verifyCode\}/', '', $_POST['template']);
 			$model->setRules($_POST['template']);
 		}
 
 		// For validate on server. But why? Don't use this. Use clientValidation
 		if(isset($_POST['ajax'])){
-			echo CActiveForm::validate($model);
+			echo UtActiveForm::validate($model);
 			Yii::app()->end();
 		}
 
 		if(isset($_POST['CallbackModel'])){
-			$model->attributes=$_POST['CallbackModel'];
-			if($model->validate()){
+			
+			if($_POST['formValid']==='1'){
+				$valid  =  true;
+			}else{
+				$model->attributes=$_POST['CallbackModel'];
+				$valid  = $model->validate();
+			}
+			
+			if($valid){
 				$result = self::mail($model,$_POST['mail']);
 				if(Yii::app()->request->isAjaxRequest){
 					$data["result"] = $result;
@@ -41,8 +51,9 @@ class Processing extends CComponent {
 				else
 					Yii::app()->user->setFlash($message['id'],$message['error']);
 			}else{
-				//спорный момент
-				echo CActiveForm::validate($model);
+				foreach($model->getErrors() as $attribute=>$errors)
+				$result[$model->getIdAttribute($attribute)]=$errors;
+				echo function_exists('json_encode') ? json_encode($result) : CJSON::encode($result);
 				Yii::app()->end();
 			}
 		}

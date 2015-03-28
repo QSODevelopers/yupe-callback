@@ -21,6 +21,8 @@ return [
     'rules'     => [
         '/callback' => 'callback/callback/index',
         '/callback/send' => 'callback/callback/validate',
+        '/callback/callback/<action:captcha[\w\d]+?>/refresh/<v>' => 'callback/callback/<action>/refresh',
+        '/callback/<action:captcha[\w\d]+>/<v>'  => 'callback/callback/<action>/',
     ],
     'component' => []
 ];
