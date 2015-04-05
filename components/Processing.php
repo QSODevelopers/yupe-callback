@@ -13,35 +13,34 @@ class Processing extends CComponent {
      * @return void
      */
 	public static function validate($model = null){
-		
+
 		if(is_null($model)){
 			$model = new CallbackForm;
-			$model->setUnicName($_POST['widgetId']);
-			if(empty($_POST['CallbackForm']['verifyCode'])) //для валидации капчи один раз при заполнении
-				$_POST['template'] = preg_replace('/\{verifyCode\}/', '', $_POST['template']);
-			$model->setRules($_POST['template']);
+			$model->setUnicName(Yii::app()->getRequest()->getPost('widgetId'));
+			$model->setRules(Yii::app()->getRequest()->getPost('template'));
 		}
-
 		// For validate on server. But why? Don't use this. Use clientValidation
-		if(isset($_POST['ajax'])){
+		if(Yii::app()->getRequest()->getPost('ajax') != null){
 			echo UtActiveForm::validate($model);
 			Yii::app()->end();
 		}
 
-		if(isset($_POST['CallbackForm'])){
-			$model->attributes=$_POST['CallbackForm'];
-			//TODO изменить логику подписи
-			//подписанная форма, для форм использующих ajax валидацию
-			$valid = $_POST['formValid']==='1' ? true : $model->validate();
-			
+		if(Yii::app()->getRequest()->getPost('CallbackForm')!= null && Yii::app()->getRequest()->csrfToken == Yii::app()->getRequest()->getPost('YUPE_TOKEN')){
+			$model->attributes=Yii::app()->getRequest()->getPost('CallbackForm');
+			if(Yii::app()->getRequest()->getPost('formValid') != null ){
+				$hash = self::getHash(); 
+			}
+
+			$valid = Yii::app()->getRequest()->getPost('formValid') != null && Yii::app()->getRequest()->getPost('formValid') == $hash ? true : $model->validate();
+
 			if($valid){
-				$result = self::mail($model, $_POST['mail']);
+				$result = self::mail($model, Yii::app()->getRequest()->getPost('mail'));
 				if(Yii::app()->request->isAjaxRequest){
-					$data["result"] = $result;
+					$data['result'] = $result;
 					echo CJSON::encode($data);
 					Yii::app()->end();
 				}
-				$message = CJSON::decode($_POST['messages']);
+				$message = CJSON::decode(Yii::app()->getRequest()->getPost('messages'));
 				$model->unsetAttributes();
 				if($result)
 					Yii::app()->user->setFlash($message['id'],$message['success']);
@@ -49,6 +48,22 @@ class Processing extends CComponent {
 					Yii::app()->user->setFlash($message['id'],$message['error']);
 			}
 		}
+	}
+
+	/**
+     * Функция получения подписи формы
+     *
+     * @return string
+     */
+
+	public static function getHash(){
+		$hashString = Yii::app()->getRequest()->getPost(Yii::app()->getRequest()->csrfTokenName);
+		foreach (Yii::app()->getRequest()->getPost('CallbackForm') as $key => $value) {
+			$hashString.= $value;
+		}
+		$hashString.=Yii::app()->getRequest()->getPost('widgetId');
+		for($i = strlen($hashString)-1, $hash = 0; $i >= 0; --$i) $hash+= ord(substr($hashString,$i,1));
+		return $hash;
 	}
 
 	/**
@@ -63,14 +78,22 @@ class Processing extends CComponent {
     	$params = CJSON::decode($mail)[0];
 
     	$controller = Yii::app()->createController('callback/callback/index');
+    	if(preg_match('/^:/',$params['from']))
+    		$from = Yii::app()->getModule('callback')->getEmailSender($params['from']);
+    	else
+    		$from = $params['from'];
+    	if(preg_match('/^:/',$params['to']))
+    		$to = Yii::app()->getModule('callback')->getEmailRecipient($params['to']);
+    	else
+    		$to = $params['to'];
 
    		$txt_message = $controller[0]->renderPartial('mail/'.$params['view'], array('model'=>$model), true, false);
-   		$headers = 'From:'.$params['from']."\r\n".
+   		$headers = 'From:'.$from."\r\n".
 					    'Content-type: text/html;'.
 					    'charset=utf-8'."\r\n".
 					    'X-Mailer: PHP/' . phpversion();
    		$result = mail(
-            	$params['to'],
+            	$to,
             	$params['title'],
             	$txt_message,
             	$headers

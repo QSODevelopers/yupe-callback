@@ -4,7 +4,9 @@
 $resetJs = 'setTimeout(function(){';
 $resetJs .= $this->formOptions['resetOptions']['resetForm']? 
 					'$("#'.$this->formOptions['id'].'").trigger("reset");
-					 $("button",form).removeAttr("disabled");':'';
+					 $("button",form).removeAttr("disabled");
+					 form.removeClass("succes error");':'';
+
 $resetJs .= $this->formOptions['resetOptions']['resetCaptcha']? 
 					'$(".captcha>a,.captcha>button",form).click();':'';					 
 $resetJs .= $this->formOptions['resetOptions']['closeModal']? 
@@ -15,12 +17,23 @@ $resetJs .= $this->formOptions['resetOptions']['clearMessage']?
 $resetJs .='},'.$this->formOptions['resetOptions']['timeout'].');';
 
 //Подпись формы после валидации для ajax						
-$ajaxSuck = $this->formOptions['ajax']?'+"&formValid=1"':'';						
+$ajaxSuck = $this->formOptions['ajax']?'+"&formValid="+getHash(form.serialize())':'';						
 						
 //Переменная накапливающая скрипт действий после валидации
 $afterValidateJs = 'js:function(form,data,hasError){
+						function getHash(formData){
+							hashString = "";
+							found = decodeURI(formData).match(/=[\w]+/g);
+							found.forEach (function(item, i, arr) {
+								hashString += /[\w]+/.exec(item)[0];
+							})
+console.log(hashString);
+							for(var i=hashString.length-1, hash=0; i >= 0; --i) hash+=hashString.charCodeAt(i);
+							return hash;
+						}
 						if(!hasError)
 						{
+							
 							$.ajax(
 							{
 								"type"		: 	"POST",
@@ -34,9 +47,11 @@ $afterValidateJs = 'js:function(form,data,hasError){
 													var $success = $("#'.$this->templateOptions['message']['id'].'",form);
 													if(data.result){
 															$success.addClass("alert-success show");
+															form.addClass("success");
 															$success.html("'.$this->successMessage.'");
 													}else{
 															$success.addClass("alert-danger show");
+															form.addClass("error");
 															$success.html("'.$this->errorMessage.'");
 													}
 												},
@@ -55,27 +70,28 @@ if($this->formOptions['showFormAfterSend'] || !Yii::app()->user->hasFlash($this-
 		'id'						=>  $this->formOptions['id'],
 		'type'						=>  $this->formOptions['type'],
 		'enableAjaxValidation'		=>  $this->formOptions['ajax'],
-		'enableClientValidation'	=>  $this->formOptions['enableClientValidation'],
+		'enableClientValidation'	=>  $this->formOptions['clientValidation'],
 		'htmlOptions'				=>  $this->formOptions['htmlOptions'],
-		'clientOptions'				=>  $this->formOptions['ajax'] || $this->formOptions['enableClientValidation'] 
+		'clientOptions'				=>  $this->formOptions['ajax'] || $this->formOptions['clientValidation'] 
 										? 
 											[
-												'validateOnSubmit'	=>	$this->formOptions['ajax'] || $this->formOptions['enableClientValidation'] ,
+												'validateOnSubmit'	=>	$this->formOptions['ajax'] || $this->formOptions['clientValidation'] ,
 												'afterValidate'		=>	$afterValidateJs
 											]
 										:
 											'',
 	]);
-		echo $this->formOptions['title'] ? '<h3>'.$this->formOptions['title'].'</h3>': '';
-		if($this->formOptions['ajax'] || $this->formOptions['enableClientValidation'])
+		echo $this->formOptions['title'] ? '<div class="title">'.$this->formOptions['title'].'</div>': '';
+
+		if($this->formOptions['ajax'] || $this->formOptions['clientValidation'])
 			echo "<script>$('#".$this->formOptions['id']."').attr('action','".$this->formOptions['action']."');</script>";
+		
+		echo Chtml::tag('div',['class'=>'col-xs-12 form-body']);
 		echo $this->formOptions['prevBodyText'];
 		
 		//иполнение кода тела формы
 		eval($body);
-?>
 		
-<?php
 		echo CHtml::hiddenField('widgetId',$this->id);
 		echo CHtml::hiddenField('mail',json_encode([$this->mailOptions]));
 		echo CHtml::hiddenField('template',$this->template);
@@ -87,7 +103,7 @@ if($this->formOptions['showFormAfterSend'] || !Yii::app()->user->hasFlash($this-
 		);
 		
 		echo $this->formOptions['afterBodyText'];
-
+		echo '</div>';
 	$this->endWidget();
 }else{
 //иначе просто выводим сообщение

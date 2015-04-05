@@ -23,12 +23,12 @@ class CallbackController extends \yupe\components\controllers\FrontController
                 'class'     => 'yupe\components\actions\YCaptchaAction',
                 'backColor' => 0xFFFFFF,
                 'foreColor'	=> 0x481704,
-                'testLimit' => 1,
+                'testLimit' => 2,
             ],
             'captchacenterForm'         => [
                 'class'     => 'yupe\components\actions\YCaptchaAction',
                 'backColor' => 0xFFFFFF,
-                'testLimit' => 1,
+                'testLimit' => 2,
             ],
 			'page'=>array(
 				'class'=>'CViewAction',

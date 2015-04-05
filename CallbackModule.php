@@ -16,13 +16,18 @@ use yupe\components\WebModule;
 
 class CallbackModule extends WebModule
 {
-	const VERSION = '0.5.1';
+	const VERSION = '0.7.5';
 	public $assetsPath = "application.modules.callback.views.assets";
 
     /**
      * @var email'ы на которые будут приходить заявки с форм
      */
-    public $emailsRecipients = '';
+    public $emailRecipient = '{"admin": "Михаил Cергеевич <ap@gmail.com>"}';
+    /**
+     * @var email'ы с которых будут приходить заявки
+     */
+    public $emailSender = '{"unnamed": "UnnamedTeam <unnamed.team211015@gmail.com>"}';
+    
 
 	// название модуля
     public function getName()
@@ -74,15 +79,64 @@ class CallbackModule extends WebModule
 		));
 	}
 
+    public function getIsInstallDefault()
+    {
+        return true;
+    }
+
     public function getAdminPageLink()
     {
         return '/callback/callbackBackend/index';
     }
+    
+    /**
+     * Функция возвращает строку email который будет использоваться для отправки оповещения
+     *
+     * @param string $email email
+     * 
+     * @return string
+     */
+    public function getEmailSender($email){
+        $email = substr($email, 1);
+        $adresses = CJSON::decode($this->emailSender);
+        if($recipient == 'fromUser'){
+            return 'Пользователь с сайта <'.Yii::app()->getRequest()->getPost('CallbackForm')['email'].'>';
+        }elseif(array_key_exists($email,$adresses))
+            return $adresses[$email];
+        else
+            throw new CException(Yii::t('CallbackModule.callback', 'Email {email} не найден в настройках. Добавить email для отправки писем можно в настройках виджета, неандерталец.',['email'=>$email]));
+    }
 
-    public function getAddress($id){
-        return 'Оповещение <test@test.ru>';
+    /**
+     * Функция возвращает строку email адресов для получения оповещений
+     *
+     * @param string $emails список email
+     * 
+     * @return string
+     */
+    public function getEmailRecipient($emails){
+        $adresses = CJSON::decode($this->emailRecipient);
+        $emails = explode(',',substr($emails,1));
+        $recipients = '';
+        foreach ($emails as $recipient) {
+            if($recipient == 'toUser'){
+                $recipients[] = 'Пользователь с сайта <'.Yii::app()->getRequest()->getPost('CallbackForm')['email'].'>';
+            }elseif(array_key_exists($recipient,$adresses))
+                $recipients[] = $adresses[$recipient];
+            else
+                throw new CException(Yii::t('CallbackModule.callback', 'Email {email} не найден в настройках. Добавить email для отправки писем можно в настройках виджета, неандерталец.',['email'=>$recipient]));
+        }
+        return implode(',',$recipients);
     }
 	
+    public function getEditableParams()
+    {
+        return [
+            'emailSender',
+            'emailRecipient'
+        ];
+    }
+
 	public function beforeControllerAction($controller, $action)
 	{
 		if(parent::beforeControllerAction($controller, $action))

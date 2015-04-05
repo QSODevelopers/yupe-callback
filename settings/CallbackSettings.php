@@ -11,7 +11,6 @@ class CallbackSettings extends yupe\widgets\YWidget
 	protected $_formOptions = [];
     protected $_templateOptions = [];      
     protected $_mailOptions = [];
-	protected $_title; 						
 
 	public $type 							= 	'block';
 	public $title							=	'';
@@ -30,9 +29,9 @@ class CallbackSettings extends yupe\widgets\YWidget
 
     public function setDefault(){
     	$this->id 				= empty($this->id) ? $this->getId() : $this->id;
-		$this->title 			= Yii::t('CallbackModule.callback','Заявка на обратный звонок');
-		$this->successMessage 	= Yii::t('CallbackModule.callback','Мы вскоре свяжемся с Вами!');
-		$this->errorMessage 	= Yii::t('CallbackModule.callback','Произошла ошибка отправки, попробуйте еще раз');
+		$this->title 			= empty($this->title) ? Yii::t('CallbackModule.callback','Заявка на обратный звонок') : $this->title;;
+		$this->successMessage 	= empty($this->successMessage) ? Yii::t('CallbackModule.callback','Мы вскоре свяжемся с Вами!') : $this->successMessage;;
+		$this->errorMessage 	= empty($this->errorMessage) ? Yii::t('CallbackModule.callback','Произошла ошибка отправки, попробуйте еще раз') : $this->errorMessage;;
 		$this->_modalOptions 	= [
 									'id'			=>	$this->id.'_modal',
 									'class'			=>	'row',
@@ -54,7 +53,7 @@ class CallbackSettings extends yupe\widgets\YWidget
 									'id'						=>	$this->id.'_form',		
 									'action'					=>	CHtml::normalizeUrl(['/callback/send']),			
 									'ajax'						=>	false,		
-									'enableClientValidation'	=>	true,							
+									'clientValidation'			=>	true,							
 									'resetOptions'				=>	[
 																		'resetForm'		    =>	true,
 																		'resetCaptcha'		=>	true,
@@ -103,7 +102,7 @@ class CallbackSettings extends yupe\widgets\YWidget
 														],
 									'message'		=>	[
 														'id'			=>	'success',
-														'class'			=>	'alert',
+														'class'			=>	'col-xs-12',
 														],
 
 									'verifyCode'	=>	[
@@ -148,8 +147,8 @@ class CallbackSettings extends yupe\widgets\YWidget
 								];
 		$this->_mailOptions		= [
 									'view'		=>	'_text',
-									'from'		=>	Yii::app()->getModule('callback')->getAddress(1),
-									'to'		=>	Yii::app()->getModule('callback')->emailsRecipients,
+									'from'		=>	':unnamed',
+									'to'		=>	':admin',
 									'title'		=>	Yii::t('CallbackModule.callback','Оповещение об обратном звонке'),
 								];
     }
