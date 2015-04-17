@@ -25,6 +25,12 @@ class CallbackController extends \yupe\components\controllers\FrontController
                 'foreColor'	=> 0x481704,
                 'testLimit' => 2,
             ],
+            'captchanovyj'         => [
+                'class'     => 'yupe\components\actions\YCaptchaAction',
+                'backColor' => 0xFFFFFF,
+                'foreColor' => 0x481704,
+                'testLimit' => 2,
+            ],
             'captchacenterForm'         => [
                 'class'     => 'yupe\components\actions\YCaptchaAction',
                 'backColor' => 0xFFFFFF,
@@ -41,4 +47,17 @@ class CallbackController extends \yupe\components\controllers\FrontController
 	public function actionIndex($code = null){
 		$this->render('index');
 	}
+
+	public function actionViewWidget($code)
+    {
+        //$code = Yii::app()->getRequest()->getPost('code');
+
+        $settings = Callback::getSettings($code);
+        $this->renderPartial(
+            'viewWidget',
+            [
+            	'settings'=>$settings
+            ],false,true 
+        );
+    }
 }

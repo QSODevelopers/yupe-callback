@@ -17,11 +17,15 @@ return [
     ],
     'import'    => [
         'application.modules.callback.forms.*',
+        'application.modules.callback.models.*',
     ],
     'rules'     => [
         '/callback' => 'callback/callback/index',
         '/callback/send' => 'callback/callback/validate',
         '/callback/callback/<action:captcha[\w\d]+?>/refresh/<v>' => 'callback/callback/<action>/refresh',
+        '/callback/callback/<action:captcha[\w\d]+?>/refresh/<v>' => 'callback/callback/<action>/refresh',
+        '/callback/widget/<code:[\w\d]+?>' => 'callback/callback/viewWidget',
+        '/callback/widget' => 'callback/callback/viewWidget',
         '/callback/<action:captcha[\w\d]+>/<v>'  => 'callback/callback/<action>/',
     ],
     'component' => []

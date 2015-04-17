@@ -2,11 +2,11 @@
 	switch ($this->type) {
 		case 'modal':
 			$this->widget('bootstrap.widgets.TbButton',$this->buttonOptions);
-			$this->render('_modal',array('model'=>$model,'body'=>$body)); 
+			$this->render('_modal',array('model'=>$model,'body'=>$body, 'afterValidateJs'=>$afterValidateJs)); 
 			break;
 
 		case 'block':
-			$this->render('_form',array('model'=>$model,'body'=>$body));
+			$this->render('_form',array('model'=>$model,'body'=>$body, 'afterValidateJs'=>$afterValidateJs));
 			break;
 
 		case 'buttonModal':
@@ -28,8 +28,8 @@
 
 		default:
 			echo '<div class="alert alert-error">
-					<h5>'.Yii::t('Callback.callback','Кто к нам с чем и зачем, тот от того и того.').'</h5>'.
-					Yii::t('Callback.callback', 'Сам ты {type}. Данный тип виджета является не коректным. Загляни в исходный код, или просмотри коментарии.',['type'=>$this->type]).'
+					<h5>'.Yii::t('CallbackModule.callback','Кто к нам с чем и зачем, тот от того и того.').'</h5>'.
+					Yii::t('CallbackModule.callback', 'Сам ты {type}. Данный тип виджета является не коректным. Загляни в исходный код, или просмотри коментарии.',['type'=>$this->type]).'
 				</div>';
 			break;
 	}

@@ -61,7 +61,7 @@ class CallbackModule extends WebModule
     // категория модуля
 	public function getCategory()
 	{
-	    return Yii::t('CallbackModule.callback', 'Services');
+	    return Yii::t('CallbackModule.callback', 'Сервисы');
 	}
 	public function getVersion()
     {
@@ -73,10 +73,12 @@ class CallbackModule extends WebModule
     }
 	public function init()
 	{
+
 		$this->setImport(array(
 			'callback.models.*',
 			'callback.components.*',
 		));
+        parent::init();
 	}
 
     public function getIsInstallDefault()
@@ -103,6 +105,8 @@ class CallbackModule extends WebModule
             return 'Пользователь с сайта <'.Yii::app()->getRequest()->getPost('CallbackForm')['email'].'>';
         }elseif(array_key_exists($email,$adresses))
             return $adresses[$email];
+        elseif(preg_match('/,/',$email))
+            throw new CException(Yii::t('CallbackModule.callback', 'Невозможно отправить письмо от нескольких адресатов {email}. Красная или белая?',['email'=>$email]));
         else
             throw new CException(Yii::t('CallbackModule.callback', 'Email {email} не найден в настройках. Добавить email для отправки писем можно в настройках виджета, неандерталец.',['email'=>$email]));
     }
@@ -134,6 +138,34 @@ class CallbackModule extends WebModule
         return [
             'emailSender',
             'emailRecipient'
+        ];
+    }
+
+    public function getParamsLabels()
+    {
+        return [
+            'adminMenuOrder'    => Yii::t('CallbackModule.callback', 'Порядок следования в меню'),
+            'emailSender'       => Yii::t('CallbackModule.callback', 'Email\'ы для отправки уведомлений'),
+            'emailRecipient'    => Yii::t('CallbackModule.callback', 'Email\'ы для получения уведомлений'),
+        ];
+    }
+
+    public function getEditableParamsGroups()
+    {
+        return [
+            'main'      => [
+                'label' => Yii::t('CallbackModule.callback', 'Главные настройки'),
+                'items' => [
+                    'adminMenuOrder',
+                ]
+            ],
+            'email'      => [
+                'label' => Yii::t('CallbackModule.callback', 'Настройки отправки'),
+                'items' => [
+                    'emailSender',
+                    'emailRecipient'
+                ]
+            ],
         ];
     }
 

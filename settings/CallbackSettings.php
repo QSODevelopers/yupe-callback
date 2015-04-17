@@ -12,9 +12,10 @@ class CallbackSettings extends yupe\widgets\YWidget
     protected $_templateOptions = [];      
     protected $_mailOptions = [];
 
+    public $id								=  	'';
+    public $status							=  	Callback::TURN_ON;
 	public $type 							= 	'block';
 	public $title							=	'';
-	public $id								=  	'';
 	public $template 						= 	'{name}{email}{phone}{text}{button}{message}';
 	public $successMessage 					= 	'';
 	public $errorMessage 					= 	'';
@@ -26,8 +27,10 @@ class CallbackSettings extends yupe\widgets\YWidget
     											];      
     public $mailOptions 					= 	[]; 
 	
+    
 
     public function setDefault(){
+
     	$this->id 				= empty($this->id) ? $this->getId() : $this->id;
 		$this->title 			= empty($this->title) ? Yii::t('CallbackModule.callback','Заявка на обратный звонок') : $this->title;;
 		$this->successMessage 	= empty($this->successMessage) ? Yii::t('CallbackModule.callback','Мы вскоре свяжемся с Вами!') : $this->successMessage;;
@@ -70,7 +73,7 @@ class CallbackSettings extends yupe\widgets\YWidget
 									'afterBodyText'				=>	'',			
 									'afterText'					=>	'',
 									'showFormAfterSend'			=> 	false,		
-								];
+								];					
 		$this->_templateOptions = [
 									'default'		=>	[
 														'groupOptions'	    =>	[
@@ -104,9 +107,8 @@ class CallbackSettings extends yupe\widgets\YWidget
 														'id'			=>	'success',
 														'class'			=>	'col-xs-12',
 														],
-
 									'verifyCode'	=>	[
-														'controller' 			        => 	Yii::app()->createController("callback/callback/index")[0],
+														'controller' 			        => 	$this->controller instanceof yupe\components\controllers\BackController ? $this->controller : Yii::app()->createController("callback/callback/index")[0],
 														'wrapperHtmlOptions'	        =>	[
 																								'class'		=>	'col-xs-9 wp-wm'
 																							],

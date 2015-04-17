@@ -9,7 +9,7 @@
  * @license  BSD
  *
  **/
-Yii::import('application.modules.callback.forms.CallbackForm');
+//Yii::import('application.modules.callback.forms.CallbackForm');
 Yii::import('application.modules.callback.CallbackModule');
 Yii::import('application.modules.callback.components.FormTemplater');
 Yii::import('application.modules.callback.settings.CallbackSettings');
@@ -17,6 +17,7 @@ Yii::import('application.modules.callback.settings.CallbackSettings');
 class CallbackWidget extends CallbackSettings{ 
 
 	private $body; //widget body
+	private $afterValidateJs;
 
 	public function getConstructView(){
 		return $this->view;
@@ -26,11 +27,13 @@ class CallbackWidget extends CallbackSettings{
     * @return void
     **/
 	public function init(){
+		if($this->status == Callback::TURN_OFF)
+			return false;
 		$this->setDefault();
+
 		$this->buttonOptions = CMap::mergeArray($this->_buttonOptions,$this->buttonOptions);
 		$this->modalOptions = CMap::mergeArray($this->_modalOptions,$this->modalOptions);
 		$this->formOptions = CMap::mergeArray($this->_formOptions,$this->formOptions);
-
 		if(isset($this->templateOptions['default']))
 			$this->_templateOptions['default'] = CMap::mergeArray($this->_templateOptions['default'], $this->templateOptions['default']);
 
@@ -67,23 +70,93 @@ class CallbackWidget extends CallbackSettings{
 	}
 
 	/**
+    * Вызов метода сборки js для виджета
+    * 
+    * @return void
+    **/
+	public function createJs(){
+		//Сброс виджета
+		$resetJs = 'setTimeout(function(){';
+		$resetJs .= !$this->formOptions['resetOptions']['resetForm']?'':	'$("#'.$this->formOptions['id'].'").trigger("reset");
+							 												 $("button",form).removeAttr("disabled");
+							 												 form.removeClass("success error");';
+		$resetJs .= !$this->formOptions['resetOptions']['resetCaptcha']?'': '$(".captcha>a,.captcha>button",form).click();';					 
+		$resetJs .= !$this->formOptions['resetOptions']['closeModal']?'': 	'$("#close-modal").click();';
+		$resetJs .= !$this->formOptions['resetOptions']['clearMessage']?'': 'var $success = $("#'.$this->templateOptions['message']['id'].'",form);
+							 												 $success.removeClass("alert-success alert-danger show").html("");';
+		$resetJs .='},'.$this->formOptions['resetOptions']['timeout'].');';
+
+		//Вывод консоли ответа от сервака, при продакшене не отображаеться, если мешает и умеете пользоваться Netwokr просто закоментировать
+		$debug = !YII_DEBUG ? '' :';form.append("<pre id=\'consoleLog\'><h2>Server answer: <strong>"+data.statusText+"</strong></h2>"+data.responseText+"</pre>");';
+
+		//Подпись формы после валидации для ajax						
+		$ajaxSuck = $this->formOptions['ajax']?'+"&formValid="+getHash(form.serialize())':'';						
+								
+		//Переменная накапливающая скрипт действий после валидации
+		$this->afterValidateJs = 'js:function(form,data,hasError){
+			function getHash(formData){
+				hashString = "";
+				found = decodeURI(formData).match(/=[\w]+/g);
+				found.forEach (function(item, i, arr) {
+					hashString += /[\w]+/.exec(item)[0];
+				})
+				for(var i=hashString.length-1, hash=0; i >= 0; --i) hash+=hashString.charCodeAt(i);
+				return hash;
+			}
+			if(!hasError)
+			{
+				$.ajax(
+				{
+					"type"		: 	"POST",
+					"url"		: 	"'.$this->formOptions['action'].'",
+					"data"		: 	form.serialize()'.$ajaxSuck.',
+					"beforeSend": 	function(){
+										$("button",form).attr("disabled","disabled");
+										$("#consoleLog",form).remove();
+									},
+					"success"	:	function(data){
+										data = $.parseJSON(data);
+										var $success = $("#'.$this->templateOptions['message']['id'].'",form);
+										if(data.result){
+												$success.addClass("alert-success show").html("'.$this->successMessage.'");
+												form.addClass("success");
+										}else{
+												$success.addClass("alert-danger show").html("'.$this->errorMessage.'");
+												form.addClass("error");
+										}
+									},
+					"complete"  :	function(data){
+										'.$resetJs.'
+										'.$debug.'
+									},
+				});
+			}
+		}';
+	}
+
+	/**
     * Запуск виджета
     * 
     * @return void
     **/
 	public function run(){
+		
+		if($this->status == Callback::TURN_OFF)
+			return false;
 		$model = new CallbackForm;
 		$model->setUnicName($this->id);
 		$model->setRules($this->template);
-
+		
 		//Если отключен JS и пришел не ajax виджет сам обрабатывает свой массив POST
 		if(!Yii::app()->request->isAjaxrequest && $_POST['widgetId'] == $this->id)
 			Processing::validate($model);
 		
 		$this->createBody();
+		$this->createJs();
 		$this->render(self::CONSTRUCT_VIEW,[
-						'model'	=>	$model,
-						'body'	=>	$this->body
+						'model'				=>	$model,
+						'body'				=>	$this->body,
+						'afterValidateJs'	=>	$this->afterValidateJs
 					]);
 	}
 }

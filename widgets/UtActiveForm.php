@@ -8,20 +8,22 @@ class UtActiveForm extends TbActiveForm
 	* See TbActiveform captchaGroup
 	*/
 	public function captchaGroup($model, $attribute, $options = array()) {
-		
+
 		$this->initOptions($options);
 		$widgetOptions = $options['widgetOptions'];
-		
 		$controller = $options['controller'];
 
 		$this->addCssClass($widgetOptions['htmlOptions'], 'form-control');
 
+		//TODO Ошибка капчи в админке после этой строчки
 		$fieldData = $this->textFieldGroup($model, $attribute, $widgetOptions['textFieldOptions']);
+		
 		unset($widgetOptions['widgetOptions']);
-
+		
 		$captchaOptions = isset($widgetOptions['verifyCodeOptions']) ? $widgetOptions['verifyCodeOptions']: array(); // array('class' => 'form-group');
 		self::addCssClass($captchaOptions['wrapperHtmlOptions'], 'captcha');
 		$fieldData .= CHtml::openTag('div', $captchaOptions['wrapperHtmlOptions']);
+
 		$fieldData .= $controller->widget('application.modules.callback.widgets.UtCaptcha', $captchaOptions['widgetOptions'], true);
 		$fieldData .= '</div>';
 

@@ -13,16 +13,16 @@ class FormTemplater {
      */
 	public static function getTemplates(){
 		return [
-			'name',
-			'phone',
-			'email',
-			'phoneMasked',
-			'email',
-			'service',
-			'verifyCode',
-			'button',
-			'errors',
-			'message'
+			'{name}'=>'name',
+			'{phone}'=>'phone',
+			'{email}'=>'email',
+			'{phoneMasked}'=>'phoneMasked',
+			'{email}'=>'email',
+			'{service}'=>'service',
+			'{verifyCode}'=>'verifyCode',
+			'{button}'=>'button',
+			'{errors}'=>'errors',
+			'{message}'=>'message'
 		];
 	}
 	/**
