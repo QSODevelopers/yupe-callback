@@ -34,6 +34,7 @@ class CallbackWidget extends CallbackSettings{
 		$this->buttonOptions = CMap::mergeArray($this->_buttonOptions,$this->buttonOptions);
 		$this->modalOptions = CMap::mergeArray($this->_modalOptions,$this->modalOptions);
 		$this->formOptions = CMap::mergeArray($this->_formOptions,$this->formOptions);
+
 		if(isset($this->templateOptions['default']))
 			$this->_templateOptions['default'] = CMap::mergeArray($this->_templateOptions['default'], $this->templateOptions['default']);
 
@@ -79,7 +80,7 @@ class CallbackWidget extends CallbackSettings{
 		$resetJs = 'setTimeout(function(){';
 		$resetJs .= !$this->formOptions['resetOptions']['resetForm']?'':	'$("#'.$this->formOptions['id'].'").trigger("reset");
 							 												 $("button",form).removeAttr("disabled");
-							 												 form.removeClass("success error");';
+							 												 form.removeClass("succes error");';
 		$resetJs .= !$this->formOptions['resetOptions']['resetCaptcha']?'': '$(".captcha>a,.captcha>button",form).click();';					 
 		$resetJs .= !$this->formOptions['resetOptions']['closeModal']?'': 	'$("#close-modal").click();';
 		$resetJs .= !$this->formOptions['resetOptions']['clearMessage']?'': 'var $success = $("#'.$this->templateOptions['message']['id'].'",form);
