@@ -76,7 +76,7 @@ class Processing extends CComponent {
      */
 	public static function mail($model, $mail){
     	$params = CJSON::decode($mail)[0];
-
+    	
     	$controller = Yii::app()->createController('callback/callback/index');
     	if(preg_match('/^:/',$params['from']))
     		$from = Yii::app()->getModule('callback')->getEmailSender($params['from']);

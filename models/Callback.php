@@ -148,21 +148,40 @@ class Callback extends yupe\models\YModel
 	}
 
 	public function beforeValidate(){
-		foreach ($this->template as $key => $templ) {
-			$templString .= $templ;
+		if($this->template!=''){
+			foreach ($this->template as $key => $templ) {
+				$templString .= $templ;
+			}
+
+			$this->template = $templString;
 		}
-		$this->template = $templString;
+		
 		return parent::beforeValidate();
 	}
-	// public function beforeSave(){
-	// 	$this->button_options   = CJSON::encode($this->button_options);
-	// 	$this->modal_options    = CJSON::encode($this->modal_options);
-	// 	$this->form_options     = CJSON::encode($this->form_options);
-	// 	$this->template_options = CJSON::encode($this->template_options);
-	// 	$this->mail_options     = CJSON::encode($this->mail_options);
 
-	// 	return parent::beforeSave();
-	// }
+	public function afterFind(){
+		foreach ($this->getAttributes() as $key => $value) {
+			$value = $this->getAttribute($key);
+			if(preg_match('/^[asobN]:\d+:[\{\"].*[\}\"]*;*$/m',$value)){
+				if(unserialize($value))
+					$this->{$key} = html_entity_decode(unserialize($value));
+				else
+					$this->{$key} = '';
+			}
+		}
+		return parent::afterFind();
+	}
+
+	public function beforeSave(){
+
+		$this->button_options   = ($this->button_options!='')  	?	serialize($this->button_options)  	: serialize('');	
+		$this->modal_options    = ($this->modal_options!='')   	?	serialize($this->modal_options)   	: serialize('');	
+		$this->form_options     = ($this->form_options!='')    	?	serialize($this->form_options)    	: serialize('');
+		$this->template_options = ($this->template_options!='')	?	serialize($this->template_options)	: serialize('');	
+		$this->mail_options     = ($this->mail_options!='')    	?	serialize($this->mail_options)    	: serialize('');	
+
+		return parent::beforeSave();
+	}
 
 	public function templateToArray(){
 		preg_match_all('/\{[\w\d]+\}/',$this->template,$templates);
@@ -219,7 +238,7 @@ class Callback extends yupe\models\YModel
 
 	public static function getSettings($code){
 		$settings = self::model()->findByAttributes(['code'=>$code]);
-		
+
 		foreach ($settings->model()->getAttributes() as $key => $value) {
 			$value = $settings->getAttribute($key);
 			
@@ -227,14 +246,22 @@ class Callback extends yupe\models\YModel
 			preg_match('/_(\w)/',$key,$w);
 			$key = preg_replace('/_\w/', strtoupper($w[1]), $key);
 
+			
 			//Сheck if string is serialized
-			if(preg_match('/^\{[\'\n ]|\{$/',$value)){
-				$settings_array[$key]= CJSON::decode($value);
+			// if(preg_match('/^\{[\'\"\n ]|\{$/',$value)){
+			// 	$settings_array[$key]= CJSON::decode($value);
+			// }
+			// else{
+			// 	if($value!='') $settings_array[$key] = $value;
+			// }
+			if(preg_match('/^\[[\'\"\n ]|\]$|^Yii::t/m',$value)){
+				if($value) $settings_array[$key] = eval(html_entity_decode('return '.$value.';'));
 			}
 			else{
 				if($value!='') $settings_array[$key] = $value;
 			}
 		}
+
 		$settings_array['id'] = $settings_array['code'];
 			unset($settings_array['code']);
 			unset($settings_array['name']);

@@ -16,7 +16,7 @@ use yupe\components\WebModule;
 
 class CallbackModule extends WebModule
 {
-	const VERSION = '0.7.5';
+	const VERSION = '0.8';
 	public $assetsPath = "application.modules.callback.views.assets";
 
     /**

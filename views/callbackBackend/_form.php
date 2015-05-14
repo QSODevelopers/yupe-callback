@@ -11,12 +11,12 @@
           if (!e && event.keyCode == 9)
           {
             event.returnValue = false;
-            insertAtCursor(obj, "    ");
+            insertAtCursor(obj, "\t");
           }
           else if (e.keyCode == 9)
           {
             e.preventDefault();
-            insertAtCursor(obj, "    ");
+            insertAtCursor(obj, "\t");
           }
     };
     function insertAtCursor(myField, myValue) {
@@ -132,29 +132,29 @@ $form = $this->beginWidget(
         <?php echo $form->dropDownListGroup($model, 'status', ['widgetOptions' => ['data' => $model->getStatusList()]]); ?>
     </div>
     <div class="col-xs-12">
-<?php $this->widget(
-    'bootstrap.widgets.TbButton',
-    [
-        'buttonType' => 'submit',
-        'context'    => 'primary',
-        'label'      => $model->isNewRecord ? Yii::t(
-            'CallbackModule.callback',
-            'Добавить и продолжить'
-        ) : Yii::t('CallbackModule.callback', 'Сохранить и продолжить'),
-    ]
-); ?>
+        <?php $this->widget(
+            'bootstrap.widgets.TbButton',
+            [
+                'buttonType' => 'submit',
+                'context'    => 'primary',
+                'label'      => $model->isNewRecord ? Yii::t(
+                    'CallbackModule.callback',
+                    'Добавить и продолжить'
+                ) : Yii::t('CallbackModule.callback', 'Сохранить и продолжить'),
+            ]
+        ); ?>
 
-<?php $this->widget(
-    'bootstrap.widgets.TbButton',
-    [
-        'buttonType'  => 'submit',
-        'htmlOptions' => ['name' => 'submit-type', 'value' => 'index'],
-        'label'       => $model->isNewRecord ? Yii::t(
-            'CallbackModule.callback',
-            'Добавить и закрыть'
-        ) : Yii::t('CallbackModule.callback', 'Сохранить и закрыть'),
-    ]
-); ?>
+        <?php $this->widget(
+            'bootstrap.widgets.TbButton',
+            [
+                'buttonType'  => 'submit',
+                'htmlOptions' => ['name' => 'submit-type', 'value' => 'index'],
+                'label'       => $model->isNewRecord ? Yii::t(
+                    'CallbackModule.callback',
+                    'Добавить и закрыть'
+                ) : Yii::t('CallbackModule.callback', 'Сохранить и закрыть'),
+            ]
+        ); ?>
 </div>
 </div>
 <div class="col-xs-6">

@@ -98,7 +98,7 @@ $this->menu = [
         </div>
     <?php  $this->endWidget();?>
 </div>
-<div class='col-xs-6'>
+<div class='col-xs-8'>
     <div class='panel panel-success'>
         <div class='panel-heading'>
             <strong><i class='fa fa-heartbeat'></i> <?php echo Yii::t('CallbackModule.callback', 'Параметры виджета'); ?></strong> 
@@ -128,27 +128,27 @@ $this->menu = [
                         'template',
                         [
                             'name'=>'button_options',
-                            'value'=>'<pre class="pre-scrollable">'.print_r(CJSON::decode($model->button_options),true).'</pre>',
+                            'value'=>'<pre class="pre-scrollable">'.$model->button_options.'</pre>',
                             'type'=>'raw'
                         ],
                         [
                             'name'=>'modal_options',
-                            'value'=>'<pre class="pre-scrollable">'.print_r(CJSON::decode($model->modal_options),true).'</pre>',
+                            'value'=>'<pre class="pre-scrollable">'.$model->modal_options.'</pre>',
                             'type'=>'raw'
                         ],
                         [
                             'name'=>'form_options',
-                            'value'=>'<pre class="pre-scrollable">'.print_r(CJSON::decode($model->form_options),true).'</pre>',
+                            'value'=>'<pre class="pre-scrollable">'.$model->form_options.'</pre>',
                             'type'=>'raw'
                         ],
                         [
                             'name'=>'template_options',
-                            'value'=>'<pre class="pre-scrollable">'.print_r(CJSON::decode($model->template_options),true).'</pre>',
+                            'value'=>'<pre class="pre-scrollable">'.$model->template_options.'</pre>',
                             'type'=>'raw'
                         ],
                         [
                             'name'=>'mail_options',
-                            'value'=>'<pre class="pre-scrollable">'.print_r(CJSON::decode($model->mail_options),true).'</pre>',
+                            'value'=>'<pre class="pre-scrollable">'.$model->mail_options.'</pre>',
                             'type'=>'raw'
                         ],
                         'success_message',
@@ -159,7 +159,7 @@ $this->menu = [
         ?>
     </div>
 </div>
-<div class='col-xs-6 '>
+<div class='col-xs-4 '>
     <div class='panel panel-warning'>
         <div class='panel-heading'>
             <strong>
@@ -183,7 +183,7 @@ $this->menu = [
         </div>
     </div>
 </div>
-<div class='col-xs-6 '>
+<div class='col-xs-4 '>
     <div class='panel panel-info'>
         <div class='panel-heading'>
             <strong><i class='fa fa-info-circle'></i> <?php echo Yii::t('CallbackModule.callback', 'Справка по параметрам'); ?></strong> 

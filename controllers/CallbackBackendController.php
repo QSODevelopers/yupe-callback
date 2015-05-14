@@ -91,7 +91,6 @@ class CallbackBackendController extends yupe\components\controllers\BackControll
     public function actionView($id)
     {
         $model = $this->loadModel($id);
-
         $code = "<?php \$this->widget(\n\t\"application.modules.callback.widgets.CallbackWidget\",Callback::getSettings('".$model->code."'));\n?>";
 
         $highlighter = new CTextHighlighter();
@@ -117,10 +116,9 @@ class CallbackBackendController extends yupe\components\controllers\BackControll
     public function actionCreate()
     {
         $model = new Callback();
-
+        $model->templateToArray();
         if (($data = Yii::app()->getRequest()->getPost('Callback')) !== null) {
             $model->setAttributes($data);
-
             if ($model->save()) {
                 Yii::app()->user->setFlash(
                     yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
@@ -135,6 +133,7 @@ class CallbackBackendController extends yupe\components\controllers\BackControll
                 );
             }
         }
+        
         $this->render('create', ['model' => $model]);
     }
 
@@ -149,7 +148,7 @@ class CallbackBackendController extends yupe\components\controllers\BackControll
     public function actionUpdate($id)
     {
         $model = $this->loadModel($id);
-       
+       	$model->templateToArray();
         if (($data = Yii::app()->getRequest()->getPost('Callback')) !== null) {
             $model->setAttributes($data);
 
@@ -169,7 +168,6 @@ class CallbackBackendController extends yupe\components\controllers\BackControll
                 );
             }
         }
-        $model->templateToArray();
         $this->render('update', ['model' => $model]);
     }
 
