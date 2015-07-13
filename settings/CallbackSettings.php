@@ -86,12 +86,16 @@ class CallbackSettings extends yupe\widgets\YWidget
 																				]
 														],
 									'button'		=>	[
-														'context'		=>	'info',
-														'buttonType'	=>	'submit',
-										                'label'			=>	Yii::t('CallbackModule.callback','Send'),
-										                'htmlOptions'	=>	[
-										                						'class'	=> 'col-sm-2'
-										                					]
+														'wrapperHtmlOptions'=>	[],
+														'widgetOptions'		=>	[
+																					'context'			=>	'info',
+																					'buttonType'		=>	'submit',
+																	                'label'				=>	Yii::t('CallbackModule.callback','Send'),
+																	                'htmlOptions'		=>	[
+																		                						'class'	=> 'col-sm-2'
+																		                					]
+																				]
+														
 														],
 									'phoneMasked'	=>	[
 														'widgetOptions'	    => [

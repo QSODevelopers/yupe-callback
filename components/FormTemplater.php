@@ -17,7 +17,8 @@ class FormTemplater {
 			'{phone}'=>'phone',
 			'{email}'=>'email',
 			'{phoneMasked}'=>'phoneMasked',
-			'{email}'=>'email',
+			'{hiddenInfo}'=>'hiddenInfo',
+			'{text}'=>'text',
 			'{service}'=>'service',
 			'{verifyCode}'=>'verifyCode',
 			'{button}'=>'button',
@@ -90,7 +91,7 @@ class FormTemplater {
 
 	
 	public static function renderButton(){
-		return '$this->widget("bootstrap.widgets.TbButton", $this->templateOptions["button"]);';
+		return 'echo Chtml::tag("div",$this->templateOptions["button"]["wrapperHtmlOptions"]); $this->widget("bootstrap.widgets.TbButton", $this->templateOptions["button"]["widgetOptions"]);echo"</div>";';
 	}
 	public static function renderErrors(){
 		return 'echo $form->errorSummary($model,null,null,$this->templateOptions["errors"]);';
@@ -107,5 +108,9 @@ class FormTemplater {
 	// 	return {php for render};
 	// }
 
+
+	public static function renderHiddenInfo(){
+		return ';';
+	}
 }
 ?>

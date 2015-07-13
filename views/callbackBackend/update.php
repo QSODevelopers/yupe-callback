@@ -96,10 +96,10 @@ $this->menu = [
                 ]); 
             ?>
         </div>
-        <div class='panel-body' >
-        <!-- <iframe src="<?php echo $this->createUrl('/callback/widget/'.$model->code);?>" frameborder='0' class="col-xs-12" scrolling="no"></iframe> -->
-            <?php $this->widget('application.modules.callback.widgets.CallbackWidget',$model::getSettings($model->code)) ?>
-        </div>
+        <!-- <div class='panel-body' > -->
+        <iframe src="<?php echo $this->createUrl('/callback/widget/'.$model->code);?>" frameborder='0' class="col-xs-12" scrolling="no"></iframe>
+            <?php //$this->widget('application.modules.callback.widgets.CallbackWidget',$model::getSettings($model->code)) ?>
+        <!-- </div> -->
     <?php  $this->endWidget();?>
 </div>
 <?php echo $this->renderPartial('_form', ['model' => $model]); ?>

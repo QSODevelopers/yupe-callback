@@ -12,6 +12,7 @@ class CallbackForm extends CFormModel{
 	public $name;
 	public $email;
 	public $phone;
+	public $hiddenInfo;
 	public $phoneMasked;
 	public $text;
 	public $service;
@@ -45,7 +46,7 @@ class CallbackForm extends CFormModel{
 			'email'=>'Ваш E-mail',
 			'phone'=>'Ваш телефон',
 			'phoneMasked'=>'Ваш телефон',
-			'text'=>'Комментарий к заявке',
+			'text'=>'Ваш вопрос',
 			'service'=>'Выберите услугу',
 			'verifyCode'=>'Проверочный код',
 			'qaptcha' => 'Проведите ползунок вправо для отправки формы'
@@ -132,6 +133,12 @@ class CallbackForm extends CFormModel{
 	            ['verifyCode', 'emptyOnInvalid']
 			];
 
+	}
+
+	public function addHiddenInfo(){
+		return [
+				['hiddenInfo','safe'],
+			];
 	}
 
 	/*Добавляйте правила валидации для своих templatов ниже
