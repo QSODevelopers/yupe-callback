@@ -36,8 +36,12 @@ class CallbackSettings extends yupe\widgets\YWidget
 		$this->successMessage 	= empty($this->successMessage) ? Yii::t('CallbackModule.callback','Мы вскоре свяжемся с Вами!') : $this->successMessage;;
 		$this->errorMessage 	= empty($this->errorMessage) ? Yii::t('CallbackModule.callback','Произошла ошибка отправки, попробуйте еще раз') : $this->errorMessage;;
 		$this->_modalOptions 	= [
-									'id'			=>	$this->id.'_modal',
-									'class'			=>	'row',
+									'widgetOptions' =>	[
+															'htmlOptions'	=>	[
+																					'id'			=>	$this->id.'_modal',
+																					'class'			=>	'row',
+																				],
+														],
 									'closeText'		=>	'<i class="fa fa-remove"></i>',
 									'title'			=>	$this->title,
 								];
@@ -77,22 +81,27 @@ class CallbackSettings extends yupe\widgets\YWidget
 		$this->_templateOptions = [
 									'default'		=>	[
 														'groupOptions'	    =>	[
-																				'class'		=>	'col-xs-12'
+																					'class'		=>	'col-xs-12'
 																				],
 														'widgetOptions'		=>	[
-																				'htmlOptions'	=>	[
-																									'class'		=>	'col-xs-12'
-																									]
+																					'htmlOptions'	=>	[
+																										'class'		=>	'col-xs-12'
+																										]
+																				],
+														'errorOptions'		=>	[
+																					'class'		=>	'help-block col-xs-12'
 																				]
 														],
 									'button'		=>	[
-														'wrapperHtmlOptions'=>	[],
+														'wrapperHtmlOptions'=>	[
+																					'class'	=>	'col-xs-12'
+																				],
 														'widgetOptions'		=>	[
 																					'context'			=>	'info',
 																					'buttonType'		=>	'submit',
 																	                'label'				=>	Yii::t('CallbackModule.callback','Send'),
 																	                'htmlOptions'		=>	[
-																		                						'class'	=> 'col-sm-2'
+																		                						'class'	=> 'col-xs-4'
 																		                					]
 																				]
 														
@@ -106,6 +115,13 @@ class CallbackSettings extends yupe\widgets\YWidget
 																									'placeholder'=>'8(___)___-__-__'
 																									]
 																				]
+														],
+									'calldate'		=>	[
+														'widgetOptions' 	=> [
+															                    'options' =>	[
+																		                        	'format' => '',
+																		                   		],
+											                					],
 														],
 									'message'		=>	[
 														'id'			=>	'success',

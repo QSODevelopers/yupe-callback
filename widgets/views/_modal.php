@@ -1,9 +1,4 @@
-<?php $this->beginWidget('bootstrap.widgets.TbModal', [
-		'htmlOptions'=>[
-			'class'	=>	$this->modalOptions['сlass'],
-			'id'	=>	$this->modalOptions['id']
-		]
-	]); 
+<?php $this->beginWidget('bootstrap.widgets.TbModal', $this->modalOptions['widgetOptions']); 
 ?>
 <div class="modal-header">
 	<a class="close" id="close-modal" data-dismiss="modal"><?php echo $this->modalOptions['closeText'] ?></a>  

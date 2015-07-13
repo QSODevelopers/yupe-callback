@@ -17,6 +17,7 @@ class FormTemplater {
 			'{phone}'=>'phone',
 			'{email}'=>'email',
 			'{phoneMasked}'=>'phoneMasked',
+			'{calldate}'=>'calldate',
 			'{hiddenInfo}'=>'hiddenInfo',
 			'{text}'=>'text',
 			'{service}'=>'service',
@@ -39,6 +40,7 @@ class FormTemplater {
 			'email',
 			'service',
 			'text',
+			'calldate',
 		];
 	}
 
@@ -101,16 +103,18 @@ class FormTemplater {
 				echo Yii::app()->user->hasFlash($this->formOptions["id"]) ? "<div class=\'alert alert-success\'>".Yii::app()->user->getFlash($this->formOptions["id"])."</div>":"";';
 	}
 	
+	public static function renderHiddenInfo(){
+		return ';';
+	}
+
+	public static function renderCalldate(){
+		return 'echo $form->timeFieldGroup($model,"calldate",$this->templateOptions["calldate"]);';
+	}
 
 	//Дописывать свои templatы ниже
 	//
 	// public static function renderTemplName(){
 	// 	return {php for render};
 	// }
-
-
-	public static function renderHiddenInfo(){
-		return ';';
-	}
 }
 ?>

@@ -5,7 +5,7 @@
 **/
 class CallbackForm extends CFormModel{
 
-	private $rules = [['name, phone, phoneMasked, email, text, service, verifyCode','safe']];
+	private $rules = [['name, phone, phoneMasked, email, text, service, verifyCode, hiddenInfo, calldate','safe']];
 	protected $unicName = 'Callback';
 
 	//Attributes
@@ -14,6 +14,7 @@ class CallbackForm extends CFormModel{
 	public $phone;
 	public $hiddenInfo;
 	public $phoneMasked;
+	public $calldate;
 	public $text;
 	public $service;
 	public $verifyCode;
@@ -42,14 +43,14 @@ class CallbackForm extends CFormModel{
 
 	public function attributeLabels(){
 		return [
-			'name'=>'Ваше имя',
-			'email'=>'Ваш E-mail',
-			'phone'=>'Ваш телефон',
-			'phoneMasked'=>'Ваш телефон',
-			'text'=>'Ваш вопрос',
-			'service'=>'Выберите услугу',
-			'verifyCode'=>'Проверочный код',
-			'qaptcha' => 'Проведите ползунок вправо для отправки формы'
+			'name'			=>	'Ваше имя',
+			'email'			=>	'Ваш E-mail',
+			'phone'			=>	'Ваш телефон',
+			'phoneMasked'	=>	'Ваш телефон',
+			'calldate'		=>	'Удобное время для звонка',
+			'text'			=>	'Ваш вопрос',
+			'service'		=>	'Выберите услугу',
+			'verifyCode'	=>	'Проверочный код',
 		];
 	}
 
@@ -112,7 +113,6 @@ class CallbackForm extends CFormModel{
 
 	public function addRuleText(){
 		return [
-				['text','safe'],
 			];
 	}
 
@@ -137,7 +137,11 @@ class CallbackForm extends CFormModel{
 
 	public function addHiddenInfo(){
 		return [
-				['hiddenInfo','safe'],
+			];
+	}
+
+	public function addCalldate(){
+		return [
 			];
 	}
 
