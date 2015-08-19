@@ -104,7 +104,7 @@ class FormTemplater {
 	}
 	
 	public static function renderHiddenInfo(){
-		return ';';
+		return 'echo $form->hiddenField($model,"hiddenInfo",$this->templateOptions["hiddenInfo"]);';
 	}
 
 	public static function renderCalldate(){

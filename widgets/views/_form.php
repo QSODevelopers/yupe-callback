@@ -21,7 +21,10 @@ if($this->formOptions['showFormAfterSend'] || !Yii::app()->user->hasFlash($this-
 		echo $this->formOptions['title'] ? '<div class="title">'.$this->formOptions['title'].'</div>': '';
 
 		if($this->formOptions['ajax'] || $this->formOptions['clientValidation'])
-			echo "<script>$('#".$this->formOptions['id']."').attr('action','".$this->formOptions['action']."');</script>";
+			Yii::app()->clientScript->registerScript('callback-zad',"
+				$('#".$this->formOptions['id']."').attr('action','".$this->formOptions['action']."');
+			");
+			
 		
 		echo Chtml::tag('div',['class'=>'col-xs-12 form-body']);
 		echo $this->formOptions['prevBodyText'];

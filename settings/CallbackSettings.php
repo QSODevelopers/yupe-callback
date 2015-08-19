@@ -52,7 +52,7 @@ class CallbackSettings extends yupe\widgets\YWidget
 									'url'			=>	CHtml::normalizeUrl(['/callback']),
 									'htmlOptions'	=>	[
 															'data-toggle'	=>	'modal',
-													        'data-target'	=>	'#'.$this->_modalOptions['id'],
+													        'data-target'	=>	'#'.$this->id.'_modal',
 														]
 								];
 		$this->_formOptions		= [
